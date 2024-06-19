@@ -1,191 +1,82 @@
-from PySide6.QtWidgets import QApplication, QMainWindow, QToolBar, QPushButton, QStatusBar, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit
-from PySide6.QtCore import QSize, Qt
+from PySide6.QtWidgets import QApplication, QMainWindow, QToolBar, QPushButton, QStatusBar, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSlider, QMessageBox, QTextEdit, QScrollArea
+from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QIcon
-
-class PoolingWidget(QWidget):
-    def __init__(self, type, data):
-        super().__init__()
-        self.layout = QVBoxLayout()
-        self.type = type
-        self.data = data
-        self.helper()
-        self.setLayout(self.layout)
-    
-    def helper(self):
-        paddingHorizontalBox = QHBoxLayout()
-        paddingLabel = QLabel("Padding (\"valid\" or \"same\"):")
-        self.paddingEdit = QLineEdit()
-        paddingHorizontalBox.addWidget(paddingLabel)
-        paddingHorizontalBox.addWidget(self.paddingEdit)
-
-        # Create Horizontal box to later add to main vbox
-        stridesHorizontalBox = QHBoxLayout()
-        poolSizeHorizontalBox = QHBoxLayout()
-
-        if self.type == "1D":
-            # Create widgets that go inside of Hbox
-            stridesLabelX = QLabel("Strides:")
-            self.stridesEditX = QLineEdit()
-            # Add widgets to the Hbox
-            stridesHorizontalBox.addWidget(stridesLabelX)
-            stridesHorizontalBox.addWidget(self.stridesEditX)
-            # Add Hbox to main Vbox
-
-            poolSizeLabelX = QLabel("Pool Size:")
-            self.poolSizeEditX = QLineEdit()
-            poolSizeHorizontalBox.addWidget(poolSizeLabelX)
-            poolSizeHorizontalBox.addWidget(self.poolSizeEditX)
-        elif self.type == "2D":
-            stridesLabelX = QLabel("StridesX:")
-            self.stridesEditX = QLineEdit()
-            stridesLabelY = QLabel("StridesY:")
-            self.stridesEditY = QLineEdit()
-            stridesHorizontalBox.addWidget(stridesLabelX)
-            stridesHorizontalBox.addWidget(self.stridesEditX)
-            stridesHorizontalBox.addWidget(stridesLabelY)
-            stridesHorizontalBox.addWidget(self.stridesEditY)
-
-            poolSizeLabelX = QLabel("Pool Size X:")
-            self.poolSizeEditX = QLineEdit()
-            poolSizeLabelY = QLabel("Pool Size Y:")
-            self.poolSizeEditY = QLineEdit()
-            poolSizeHorizontalBox.addWidget(poolSizeLabelX)
-            poolSizeHorizontalBox.addWidget(self.poolSizeEditX)
-            poolSizeHorizontalBox.addWidget(poolSizeLabelY)
-            poolSizeHorizontalBox.addWidget(self.poolSizeEditY)
-        elif self.type == "3D":
-            stridesLabelX = QLabel("StridesX:")
-            self.stridesEditX = QLineEdit()
-            stridesLabelY = QLabel("StridesY:")
-            self.stridesEditY = QLineEdit()
-            stridesLabelZ = QLabel("StridesZ:")
-            self.stridesEditZ = QLineEdit()
-            stridesHorizontalBox.addWidget(stridesLabelX)
-            stridesHorizontalBox.addWidget(self.stridesEditX)
-            stridesHorizontalBox.addWidget(stridesLabelY)
-            stridesHorizontalBox.addWidget(self.stridesEditY)
-            stridesHorizontalBox.addWidget(stridesLabelZ)
-            stridesHorizontalBox.addWidget(self.stridesEditZ)
-
-            poolSizeLabelX = QLabel("Pool Size X:")
-            self.poolSizeEditX = QLineEdit()
-            poolSizeLabelY = QLabel("Pool Size Y:")
-            self.poolSizeEditY = QLineEdit()
-            poolSizeLabelZ = QLabel("Pool Size Z:")
-            self.poolSizeEditZ = QLineEdit()
-            poolSizeHorizontalBox.addWidget(poolSizeLabelX)
-            poolSizeHorizontalBox.addWidget(self.poolSizeEditX)
-            poolSizeHorizontalBox.addWidget(poolSizeLabelY)
-            poolSizeHorizontalBox.addWidget(self.poolSizeEditY)
-            poolSizeHorizontalBox.addWidget(poolSizeLabelZ)
-            poolSizeHorizontalBox.addWidget(self.poolSizeEditZ)
-        
-        self.layout.addLayout(stridesHorizontalBox)
-        self.layout.addLayout(paddingHorizontalBox)
-        self.layout.addLayout(poolSizeHorizontalBox)
-
-        enterButton = QPushButton("Create")
-        enterButton.clicked.connect(self.retreiveData)
-        self.layout.addWidget(enterButton)
-    
-    def retreiveData(self):
-        if self.type == "1D":
-            self.data.append(["pool1D", (self.poolSizeEditX.text()), (self.stridesEditX.text()), self.paddingEdit.text()])
-        elif self.type == "2D":
-            self.data.append(["pool2D", (self.poolSizeEditX.text(), self.poolSizeEditY.text()), (self.stridesEditX.text(), self.stridesEditY.text()), self.paddingEdit.text()])
-        elif self.type == "3D":
-            self.data.append(["pool3D", (self.poolSizeEditX.text(), self.poolSizeEditY.text(), self.poolSizeEditZ.text()), (self.stridesEditX.text(), self.stridesEditY.text(), self.stridesEditZ.text()), self.paddingEdit.text()])
-        self.close()
-
-class ConvolutionWidget(QWidget):
-    def __init__(self, type, data):
-        super().__init__()
-        self.layout = QVBoxLayout()
-        self.type = type
-        self.data = data
-        self.helper()
-        # self.label = QLabel("Add Convolutional Layer")
-        # layout.addWidget(self.label)
-        self.setLayout(self.layout)
-
-    def helper(self):
-        paddingHorizontalBox = QHBoxLayout()
-        paddingLabel = QLabel("Padding (\"valid\" or \"same\"):")
-        self.paddingEdit = QLineEdit()
-        paddingHorizontalBox.addWidget(paddingLabel)
-        paddingHorizontalBox.addWidget(self.paddingEdit)
-
-        activationHorizontalBox = QHBoxLayout()
-        activationLabel = QLabel("Activation:")
-        self.activationEdit = QLineEdit()
-        activationHorizontalBox.addWidget(activationLabel)
-        activationHorizontalBox.addWidget(self.activationEdit)
-
-        # Create Horizontal box to later add to main vbox
-        stridesHorizontalBox = QHBoxLayout()
-        if self.type == "1D":
-            # Create widgets that go inside of Hbox
-            stridesLabelX = QLabel("Strides:")
-            self.stridesEditX = QLineEdit()
-            # Add widgets to the Hbox
-            stridesHorizontalBox.addWidget(stridesLabelX)
-            stridesHorizontalBox.addWidget(self.stridesEditX)
-            # Add Hbox to main Vbox
-        elif self.type == "2D":
-            stridesLabelX = QLabel("StridesX:")
-            self.stridesEditX = QLineEdit()
-            stridesLabelY = QLabel("StridesY:")
-            self.stridesEditY = QLineEdit()
-            stridesHorizontalBox.addWidget(stridesLabelX)
-            stridesHorizontalBox.addWidget(self.stridesEditX)
-            stridesHorizontalBox.addWidget(stridesLabelY)
-            stridesHorizontalBox.addWidget(self.stridesEditY)
-        elif self.type == "3D":
-            stridesLabelX = QLabel("StridesX:")
-            self.stridesEditX = QLineEdit()
-            stridesLabelY = QLabel("StridesY:")
-            self.stridesEditY = QLineEdit()
-            stridesLabelZ = QLabel("StridesZ:")
-            self.stridesEditZ = QLineEdit()
-            stridesHorizontalBox.addWidget(stridesLabelX)
-            stridesHorizontalBox.addWidget(self.stridesEditX)
-            stridesHorizontalBox.addWidget(stridesLabelY)
-            stridesHorizontalBox.addWidget(self.stridesEditY)
-            stridesHorizontalBox.addWidget(stridesLabelZ)
-            stridesHorizontalBox.addWidget(self.stridesEditZ)
-        
-        self.layout.addLayout(stridesHorizontalBox)
-        self.layout.addLayout(paddingHorizontalBox)
-        self.layout.addLayout(activationHorizontalBox)
-
-        enterButton = QPushButton("Create")
-        enterButton.clicked.connect(self.retreiveData)
-        self.layout.addWidget(enterButton)
-    
-    def retreiveData(self):
-        if self.type == "1D":
-            self.data.append(["conv1D", (self.stridesEditX.text()), self.paddingEdit.text(), self.activationEdit.text()])
-        elif self.type == "2D":
-            self.data.append(["conv2D", (self.stridesEditX.text(), self.stridesEditY.text()), self.paddingEdit.text(), self.activationEdit.text()])
-        elif self.type == "3D":
-            self.data.append(["conv3D", (self.stridesEditX.text(), self.stridesEditY.text(), self.stridesEditZ.text()), self.paddingEdit.text(), self.activationEdit.text()])
-        self.close()
-
-
+from classes.convolutionWidget import ConvolutionWidget
+from classes.dense import DenseWidget
+from classes.flatten import FlattenWidget
+from classes.poolingWidget import PoolingWidget
 
 class MainWindow(QMainWindow):
     def __init__(self, app):
         super().__init__()
         self.app = app
         self.model = list()
-        self.setWindowTitle("AI Model Creator")
 
+        self.setWindowTitle("AI Model Creator")
+        self.createMenuBar()
+
+        self.layout = QHBoxLayout()
+        self.createUIElements()
+        central_widget = QWidget()
+        central_widget.setLayout(self.layout)
+        self.setCentralWidget(central_widget)
+
+        # lolbutton = QPushButton("lol")
+        # lolbutton.clicked.connect(lambda: print(self.model))
+        # self.setCentralWidget(lolbutton)
+
+    def createUIElements(self):
+        self.inputBox = QVBoxLayout()
+        self.outputBox = QVBoxLayout()
+        self.modelTextBox = QVBoxLayout()
+
+        # # main_widget = QWidget()
+        # # layout = QVBoxLayout(main_widget)
+        # self.scrollModel = QScrollArea()
+        # self.scrollModel.setWidget(self.modelTextBox)
+        # self.scrollModel.setWidgetResizable(True)
+
+        self.modelDisplayList = list()
+
+        #Epoches
+        epochBox = QHBoxLayout()
+
+        epochLabel = QLabel("0")
+        epochBox.addWidget(epochLabel)
+
+        epochSlider = QSlider(Qt.Horizontal)
+        epochSlider.setTickPosition(QSlider.TicksAbove)
+        epochSlider.setTickInterval(10)
+        epochSlider.setMinimum(1)
+        epochSlider.setMaximum(99)
+        epochBox.addWidget(epochSlider)
+
+        epochSlider.valueChanged.connect(lambda: epochLabel.setText(str(epochSlider.value())))
+
+        self.inputBox.addLayout(epochBox)
+
+        enterButton = QPushButton("Train Model")
+        self.inputBox.addWidget(enterButton)
+
+        evaluateButton = QPushButton("Evaluate Model")
+        self.inputBox.addWidget(evaluateButton)
+
+        epochSlider2 = QSlider(Qt.Horizontal)
+        self.outputBox.addWidget(epochSlider2)
+
+        self.inputBox.addLayout(self.modelTextBox)
+        self.layout.addLayout(self.inputBox)
+        self.layout.addLayout(self.outputBox)
+
+    def createMenuBar(self):
         #Menubar
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu("File")
         save_action = file_menu.addAction("Save")
-        saveAs_action = file_menu.addAction("Save As")
+        load_action = file_menu.addAction("Load")
         quit_action = file_menu.addAction("Quit")
+        save_action.triggered.connect(self.saveData)
+        load_action.triggered.connect(self.loadData)
         quit_action.triggered.connect(self.quit_app)
 
         add_menu = menu_bar.addMenu("Add")
@@ -207,24 +98,111 @@ class MainWindow(QMainWindow):
         add_pool_3d.triggered.connect(lambda: self.openPoolingWidget("3D"))
 
         add_flatten = add_menu.addAction("Flatten Layer")
+        add_flatten.triggered.connect(self.openFlattenWidget)
 
         add_dense = add_menu.addAction("Dense Layers")
+        add_dense.triggered.connect(self.openDenseWidget)
 
         add_menu = menu_bar.addMenu("Help")
 
-        lolbutton = QPushButton("lol")
-        lolbutton.clicked.connect(lambda: print(self.model))
-        self.setCentralWidget(lolbutton)
+    def modelDisplayAdd(self):
+        # self.modelTextBox.clear()
+        # self.modelDisplayList = list()
+        # for i in self.model:
+        testText = QTextEdit(self.convertModelListToText(self.model[-1]))
+        testText.setReadOnly(True)
+        self.modelTextBox.addWidget(testText)
+        self.modelDisplayList.append(testText)
+        
+    def convertModelListToText(self, someList):
+        if someList[0] == "pool1D":
+            someString = "Pool size: " + str(someList[1]) + ", Strides: " + str(someList[2]) + ", Padding: " + someList[3] + "."
+        elif someList[0] == "pool2D":
+            someString = "Pool size: (" + str(someList[1][0]) + ", " + str(someList[1][1]) + "), " + "Stride size: (" + str(someList[2][0]) + ", " + str(someList[2][1]) + "), " + "Padding: " + someList[3] + "."
+        elif someList[0] == "pool3D":
+            someString = "Pool size: (" + str(someList[1][0]) + ", " + str(someList[1][1]) + ", " + str(someList[1][2]) + "), " + "Stride size: (" + str(someList[2][0]) + ", " + str(someList[2][1]) + ", " + str(someList[2][2]) + "), " + "Padding: " + someList[3] + "."
+        elif someList[0] == "conv1D":
+            someString = "Strides: " + str(someList[1]) + ", Padding: " + someList[2] + ", Activation: " + someList[3] + "."
+        elif someList[0] == "conv2D":
+            someString = "Stride size: (" + str(someList[1][0]) + ", " + str(someList[1][1]) +  "), " + "Padding: " + someList[2] + ", Activation: " + someList[3] + "."
+        elif someList[0] == "conv3D":
+            someString = "Stride size: (" + str(someList[1][0]) + ", " + str(someList[1][1]) + ", " + str(someList[1][2]) + "), " + "Padding: " + someList[2] + ", Activation: " + someList[3] + "."
+        elif someList[0] == "dense":
+            someString = "Units: " + str(someList[1]) + ", Activation: " + someList[2] + "."
+        elif someList[0] == "flatten":
+            someString = "Size of Input: (" + str(someList[1]) + ", " + str(someList[2]) + ")."
+        return someString
+
+    def saveData(self):
+        saveFile = open('modelSaves/modelSave.txt', 'w')
+        saveFile.write(str(len(self.model)))
+        saveFile.write("\n")
+        for i in self.model: #Add cutsom save file names later
+            tempList = list()
+            for j in i:
+                if isinstance(j, tuple):
+                    tempList.append("startOfTuple")
+                    for k in j:
+                        tempList.append(str(k))
+                    tempList.append("endOfTuple")
+                else:
+                    tempList.append(str(j))
+            print(tempList)
+            saveFile.write(" ".join(tempList))
+            saveFile.write("\n")
+        saveFile.close()
     
+    def loadData(self):
+        fileLoad = open('modelSaves/modelSave.txt', 'r')
+        for _ in range(int(fileLoad.readline())):
+            tempList = fileLoad.readline().split()
+            finalList = list()
+            inTuple = False
+            currentTuple = list()
+            for i in tempList:
+                if i == "startOfTuple":
+                    inTuple = True
+                    currentTuple = list()
+                    continue
+                elif i == "endOfTuple":
+                    inTuple = False
+                    finalList.append(tuple(currentTuple))
+                    continue
+                
+                if inTuple == True:
+                    currentTuple.append(int(i))
+                else:
+                    try: finalList.append(int(i))
+                    except: finalList.append(i)
+            self.model.append(finalList)
+            self.modelDisplayAdd()
+        fileLoad.close()
+        
     def quit_app(self):
         self.app.quit()
     
     def openConvolutionWidget(self, type : str):
-        widget = ConvolutionWidget(type, self.model)
+        widget = ConvolutionWidget(type, self)
         widget.show()
         self.addWindow1 = widget
     
     def openPoolingWidget(self, type : str):
-        widget = PoolingWidget(type, self.model)
+        widget = PoolingWidget(type, self)
         widget.show()
         self.addWindow2 = widget
+    
+    def openFlattenWidget(self):
+        widget = FlattenWidget(self)
+        widget.show()
+        self.addWindow3 = widget
+    
+    def openDenseWidget(self):
+        widget = DenseWidget(self)
+        widget.show()
+        self.addWindow4 = widget
+    
+    def closeEvent(self, event):
+        confirmation = QMessageBox.question(self, "Warning", "Are you sure you want to do this?", QMessageBox.Yes | QMessageBox.No)
+        if confirmation == QMessageBox.Yes: event.accept()
+        else: event.ignore()
+#SetGeometry

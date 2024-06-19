@@ -89,9 +89,9 @@ while True:
         evaluateAccuracy(test_images, test_labels, 3)
     elif option == "P":
         option2 = input("What is the file name of this picture including the file extension?")
-        evaluatePicture(option)
+        evaluatePicture(option2)
     elif option == "L":
-        model.load_weights("Model/save.ckpt")
+        model.load_weights("Model/save.weights.h5")
     elif option == "Exit":
         break
 
