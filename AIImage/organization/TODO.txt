@@ -1,0 +1,6 @@
+To Do:
+1. Create script that creates dataset (Also find how to use GPU)
+2. Create one function to train models
+3. Get highest accuracy models
+4. Save the models
+5. Find way to test
