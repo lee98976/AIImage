@@ -1,0 +1,6 @@
+5
+conv2D startOfTuple 2 2 endOfTuple startOfTuple 28 28 1 endOfTuple 2 same relu
+pool2D startOfTuple 2 2 endOfTuple startOfTuple 2 2 endOfTuple same
+flatten 14 14
+dense 98 relu
+dense 10 None

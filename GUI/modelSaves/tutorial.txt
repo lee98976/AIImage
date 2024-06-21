@@ -1,0 +1,4 @@
+3
+flatten 28 28
+dense 128 relu
+dense 10 None

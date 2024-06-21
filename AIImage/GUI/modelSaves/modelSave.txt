@@ -1,2 +1,0 @@
-1
-conv2D startOfTuple 1 2 endOfTuple valid relu
