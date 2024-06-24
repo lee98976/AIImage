@@ -23,6 +23,7 @@ class TrainModel():
         self.epoches = epoches
         self.currentThread = threading.Thread(target=self.trainNew, args=(), daemon=True)
         self.checkpoint_path = "modelWeightSaves/temp.weights.h5"
+        self.useGPU()
     
     # def makeModeFromData(self) -> None:
         
@@ -71,7 +72,8 @@ class TrainModel():
         
 
     def useGPU(self) -> None:
-        tf.config.list_physical_devices('GPU')
+        physical_devices = tf.config.list_physical_devices('GPU')
+        tf.config.experimental.set_memory_growth(physical_devices[0], True)
         print("# of GPUS: ", len(tf.config.list_physical_devices('GPU')))
 
     def trainNew(self):
@@ -117,6 +119,7 @@ class TrainModel():
         if self.currentThread.is_alive():
             return
         if option == "T":
+            self.useGPU()
             self.currentThread = threading.Thread(target=self.trainNew, args=(), daemon=True)
             self.currentThread.start()
         elif option == "C":

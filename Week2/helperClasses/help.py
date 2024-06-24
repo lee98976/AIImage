@@ -1,11 +1,11 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QToolBar, QPushButton, QStatusBar, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QSlider, QMessageBox, QTextEdit, QScrollArea, QDialogButtonBox, QDialog
 from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QIcon, QFont
-from classes.convolutionWidget import ConvolutionWidget
-from classes.dense import DenseWidget
-from classes.flatten import FlattenWidget
-from classes.poolingWidget import PoolingWidget
-from classes.trainModel import TrainModel
+from helperClasses.convolutionWidget import ConvolutionWidget
+from helperClasses.dense import DenseWidget
+from helperClasses.flatten import FlattenWidget
+from helperClasses.poolingWidget import PoolingWidget
+from helperClasses.trainModel import TrainModel
 
 class HelpDialog(QDialog):
     def __init__(self, type1, parent=None):
